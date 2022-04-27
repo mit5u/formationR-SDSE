@@ -1,0 +1,106 @@
+body {
+    font-family: "Gill Sans MT", "Gill Sans", sans-serif;
+    font-size: 14pt;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    width: 100%;
+    height: 100%;
+    color: black;
+    background-color: white;
+}
+
+h1 {
+    text-align: center;
+    background: transparent;
+    line-height: 1.2em;
+    font-size: 160%;
+    border: 3px solid green;
+    display: block;
+}
+
+h2 {
+    color: blue;
+    text-align: center;
+}
+
+h3{  
+    color: #0080FF;
+}
+
+code.r{
+  font-size: 24px;
+}
+
+pre{
+  font-size: 24px;
+}
+
+p {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+a {
+    text-decoration: none;
+}
+
+/*
+.hidden {
+    visibility: hidden;
+}
+
+.author {
+    height: 100px;
+    text-align: center;
+}
+
+.date {
+    text-align: center;
+    font-size: -1;
+}
+
+.single_slide {
+    font-size: 12pt;
+    color: black;
+}
+
+.slide {
+    padding-top: 10%;
+    margin: 0 0 0 0;
+    z-index: 20;
+    border-width: 0;
+    clear: both;
+    line-height: 120%;
+    background-color: transparent;
+}
+
+.slidy_toc {
+    position: absolute;
+    z-index: 300;
+    max-width: 30em;
+    overflow: auto;
+    top: auto;
+    right: auto;
+    left: 4em;
+    bottom: 4em;
+    padding: 1em;
+    background: rgb(240, 240, 240);
+    border-style: solid;
+    border-width: 2px;
+    font-size: 60%;
+}
+
+.subtitle {
+    color: blue;
+    font-size: 12pt;
+}
+
+.titleslide {
+    font-weight: bold;
+    font-style: italic;
+}
+
+:link {
+    color: navy;
+}
+*/
