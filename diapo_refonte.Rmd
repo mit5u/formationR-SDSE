@@ -3,7 +3,7 @@ title: 'Prise en main rapide de données sous <img alt="R" src="www/logo_r.png" 
 author: "Jocelyn Béziau (Insee) et Céline Técher (Dreets)"
 date: 'Version du `r format(Sys.Date(), "%d %B %Y")`'
 output:
-  slidy_presentation:
+    slidy_presentation:
       self_contained: false
       css: r_rapide.css
       footer: "Prise en main rapide de données sous R - mai 2022"
@@ -25,7 +25,7 @@ pops <- as_tibble(readRDS("donnees/support/popsR54.RDS"))
 tab_naissances <- import("donnees/support/tab_naissances5.sas7bdat")
 
 knitr::knit_hooks$set(optipng = knitr::hook_optipng)
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE, cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, cache = TRUE)
 
 set.seed(42)
 options(width = 100, 
@@ -154,19 +154,19 @@ L'utilisation d'un package nécessite deux étapes :
 
 * **l'installation** du package depuis un dépôt (CRAN ou mirroir interne Insee) vers le disque dur. Une seule fois par package (hors upgrade) et par version de R
 
-```{r}
+```{r eval = FALSE}
 install.packages("rio")
 ```
 
 * **le chargement en mémoire**, pour indiquer à R que l'on a besoin des fonctions de ce package. À chaque session R
 
-```{r}
+```{r eval = FALSE}
 library(rio)
 ```
 
 Pour installer et charger en mémoire TOUS les packages utilisés dans cette formation :
 
-```{r}
+```{r eval = FALSE}
 liste_packages_formation <- c("gtools", "readODS", "tidyverse", "rio", "skimr",
                  "tidymodels", "ggformula", "plotly", "DT", "questionr",
                  "RPostgres", "tables", "Hmisc", "RSQLite", "zoo", "ggformula")
@@ -180,7 +180,7 @@ sapply(liste_packages_formation, FUN = require, character.only = TRUE)
 Chaque type de fichier possède ses spécificités, et possède en général un package ou une fonction dédiée pour son import dans R. Le package **rio** encapsule ces différentes fonctions pour n'avoir à appeler qu'une unique fonction "couteau-suisse" (qui appelle ensuite la fonction ad hoc selon le type de fichier en entrée)
 
 
-```{r}
+```{r eval = FALSE}
 library(rio)
 p <- import("poplegale_6815.RDS")
 p <- import("poplegale_6815.csv")
@@ -191,7 +191,7 @@ Pour un import plus fin (numéro d'une feuille excel, colonnes à lire dans une 
 
 Attention à charger le package en mémoire, sinon les fonctions associées sont inutilisables et produisent une erreur de la forme :
 
-```{r echo=FALSE}
+```{r echo = FALSE}
 unloadNamespace("rio")
 tryCatch(p <- import("donnees/support/popsR54.RDS"), error = function(e) message(e$message),
          finally = library(rio))
@@ -210,14 +210,14 @@ Une fonction est donc un objet qui :
 
 On peut affecter une fonction à un autre objet pour créer des alias :
 
-```{r}
+```{r eval = FALSE}
 lire <- import
 lire("donnees/support/popsR54.RDS")
 ```
 
 ou définir de nouvelles fonctions :
 
-```{r}
+```{r eval = FALSE}
 lire <- function(x) import(x, setclass = "tibble")
 ```
 
@@ -247,28 +247,18 @@ Des formations sont consacrées à la construction de fonctions dans R, mais dé
 
 Lors de l'appel de la fonction, le nom des arguments peut être omis s'ils sont listés exactement dans le bon ordre (comme pour les macros de SAS). On peut également utiliser des noms abrégés s'ils ne sont pas ambigus pour la fonction.
 
-```{r}
-help(topic = "import")
-help("import") # nom facultatif : le premier argument de help() s'appelle topic
-help(package = "rio") # nom obligatoire : le premier argument de help() ne s'appelle pas package
-help(p = "rio") # package est le seul argument de help() qui commence par un p
-```
-
-
-
 ## Obtenir de l'aide sur une fonction ou un package
 
 La fonction `help()` affiche l'aide en ligne pour une fonction (si le package la contenant est chargé en mémoire) ou un package (s'il est installé)
 
 On peut utiliser `?` suivi du nom de la fonction pour afficher l'aide correspondante, ou `??` suivi d'un mot-clef pour rechercher les pages d'aide le contenant
 
-```{r}
+```{r eval = FALSE}
 help("import") 
 help(package = "rio")
 ?import
 ??SAS
 ```
-
 
 
 ## Ne pas confondre '=' et '<-'
@@ -280,7 +270,7 @@ round(mean(1:10))
 L'assignation (`<-`) est également une fonction.
 Son appel peut donc être inclus dans n'importe quel appel de fonction
 
-```{r}
+```{r eval = FALSE}
 df <- import(file <- file.choose())
 df <- import(file = file.choose())
 ```
@@ -299,7 +289,7 @@ Ces deux lignes **ne sont pas tout à fait équivalentes** : dans le premier cas
 
 ### En ligne de commande
 
-```{r}
+```{r eval = FALSE}
 ls() # liste des objets en mémoire
 str(tab_naissances) # liste des variables composant l'objet tab_naissances
 View(tab_naissances) # affiche l'objet dans le panneau en haut à gauche
@@ -317,7 +307,7 @@ Dans la syntaxe R de base, cet enchaînement se présente sous une forme logique
 
 L'opérateur `%>%` (pipe), introduit par le package **magrittr** et repris par **dplyr**, facilite la lecture de cet enchaînement d'opérations :
 
-```{r}
+```{r eval = FALSE}
 library(dplyr)
 recette_tajine %>% 
     cuisiner() %>% # les parenthèses sont optionnelles
@@ -327,7 +317,7 @@ recette_tajine %>%
 
 Les commandes suivantes sont équivalentes :
 
-```{r}
+```{r eval = FALSE}
 tab_naissances %>% head %>% tail(1)
 tab_naissances %>% head() %>% tail(1)
 
@@ -345,7 +335,7 @@ head(tab_naissances) %>% tail(1)
 
 Une première syntaxe, similaire à SQL, permet de conserver une liste de colonnes de la table
 
-```{r}
+```{r eval = TRUE}
 tab_naissances %>% select(sexe, jumeau, agemere) %>% head()
 ```
 
@@ -364,7 +354,7 @@ tab_naissances %>% distinct(csm)
 
 C'est l'équivalent de l'instruction SQL :
 
-```{r engine = "sql", cache = FALSE}
+```{r engine = "sql", cache = FALSE, eval = FALSE}
 SELECT DISTINCT csm FROM tab_naissances
 ```
 
@@ -376,7 +366,7 @@ tab_naissances %>% distinct()
 
 C'est l'équivalent de l'instruction SQL :
 
-```{r engine = "sql", cache = FALSE}
+```{r engine = "sql", cache = FALSE, eval = FALSE}
 SELECT DISTINCT * FROM tab_naissances
 ```
 
@@ -388,15 +378,15 @@ On ne met rien autour de notre paramètre lorsqu'on s'intéresse au *contenu* de
 
 Lorsqu'on ne veut pas que notre paramètre soit interprété comme un objet R, il faut l'encadrer par des quotes (simples : `'chaîne_de_caractères'` ou doubles : `"chaîne_de_caractères"`)
 
-```{r eval=FALSE}
+```{r eval = FALSE}
 import("NAIS06.sas7bdat")
 ```
-```{r eval=FALSE}
+```{r eval = FALSE}
 import(NAIS06.sas7bdat) 
 ```
 
-```{r echo=FALSE}
-tryCatch(import(NAIS06.sas7bdat),error=function(e) message(e$message))
+```{r echo = FALSE}
+tryCatch(import(NAIS06.sas7bdat), error = function(e) message(e$message))
 ```
 
 Les quotes sont parfois optionnelles : par exemple, le comportement des fonctions `help()` et `library()` reste le même que l'on mette des quotes ou non
@@ -415,7 +405,7 @@ Il existe par ailleurs des exceptions (évaluation non standard : NSE), où il *
 
 ## Solution 
 
-```{r}
+```{r eval = TRUE}
 # 1
 tab_naissances %>% head(11) %>% tail(1)
 # 2
@@ -771,7 +761,7 @@ p %>% group_by(D) %>%
     head(15)
 ```
 
-Pour obtenir le maximum parmi les valeurs renseignées, on peut faire utiliser l'argument `na.rm = TRUE` dans la fonction `max()` :
+Pour obtenir le maximum parmi les valeurs renseignées, on peut utiliser l'argument `na.rm = TRUE` dans la fonction `max()` :
 
 ```{r, warning = FALSE, message = FALSE}
 p %>% group_by(D) %>% 
@@ -785,7 +775,7 @@ p %>% group_by(D) %>%
 Il est possible de créer une nouvelle colonne impliquant une statistique, en redescendant le résultat d'un calcul fait sur un groupe de lignes au niveau de chacune des lignes du groupe :
 ```{r echo = TRUE, warning = FALSE, message = FALSE}
 p %>% group_by(D) %>%
-    mutate (PMUN15max = max(PMUN15, na.rm=TRUE))
+    mutate (PMUN15max = max(PMUN15, na.rm = TRUE))
 ```
 
 
@@ -1025,12 +1015,12 @@ left_join(superheros, editeurs, by = "editeur")
 ```
 
 ## Conserver toutes les lignes des deux tables
-```{r include = TRUE, eval = TRUE, echo= TRUE}
+```{r include = TRUE, eval = TRUE, echo = TRUE}
 full_join(superheros, editeurs, by = "editeur")
 ```
 
 ## Conserver uniquement les lignes communes aux deux tables
-```{r include = TRUE, eval = TRUE, echo= TRUE}
+```{r include = TRUE, eval = TRUE, echo = TRUE}
 inner_join(superheros, editeurs)
 ```
 
@@ -1649,7 +1639,7 @@ dbListFields(base,c("formation","poplegale_6815"))    # liste des colonnes d'une
 
 ## Récupérer le résultat d'une requête SQL
 
-```{r}
+```{r eval = FALSE}
 dbGetQuery(base,"SELECT * FROM formation.poplegale_6815
                    WHERE pmun15>300000")
 ```
@@ -1657,7 +1647,7 @@ dbGetQuery(base,"SELECT * FROM formation.poplegale_6815
 
 ## Travailler sur une table PostgreSQL comme sur une table R
 <!-- cf C:\Users\GI1ZM7\Documents\00_Travaux\SNLA\Bonnes pratiques R\bonnes_pratiques_R_BDD.Rmd-->
-
+<!-- cf https://db.rstudio.com/getting-started/overview/-->
 # Séquence 15 - Partager et diffuser ses résultats
 
 ## RMarkdown

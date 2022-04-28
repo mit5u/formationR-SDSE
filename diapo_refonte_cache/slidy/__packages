@@ -11,3 +11,12 @@ forcats
 haven
 rio
 DT
+lattice
+survival
+Formula
+Hmisc
+lubridate
+ggstance
+scales
+ggridges
+ggformula
