@@ -568,7 +568,7 @@ tab_naissances %>% mutate(
 
 2) Discrétiser l'âge de la mère : moins de 18, [18,25[ , [25,35[ , [35,45[ , 45 et +
 
-## Solution de l'exercice
+## Solution de l'exercice (A)
 
 ### Avec case_when et l'appartenance à une liste
 ```{r}
@@ -581,6 +581,7 @@ tab_naissances %>%
 ```
 `c()` est une fonction de base qui construit un objet fondamental de R : un **vecteur**, si fondamental qu'en fait **il n'y a pas de données scalaires en R**, et `sexe == "1"` aurait pu s'écrire `sexe %in% "1"`. En R, il faut toujours commencer par raisonner en termes d'opérations sur des ensembles.
 
+## Solution de l'exercice (B)
 ### Avec un calcul booléen
 ```{r}
 tab_naissances %>% 
@@ -744,13 +745,15 @@ tab_naissances %>%
 
 Il est possible de filtrer sur une condition impliquant une statistique, en redescendant le résultat d'un calcul sur un groupe de lignes au niveau de chacune des lignes. Par exemple pour sélectionner les communes ayant la plus forte population de leur département  :
 
-```{r, cache = TRUE, message = FALSE, warning = FALSE}
+```{r cache = TRUE, message = FALSE, warning = FALSE}
 p <- import("donnees/support/poplegale_6815.sas7bdat")
 p %>% group_by(D) %>% 
     filter(PMUN15 == max(PMUN15))
 ```
 
 Question : Pourquoi uniquement 11 départements (la table initiale contient 98 départements) ?
+
+---- 
 
 <!--Réponse : Le maximum d'un vecteur contenant des valeurs manquantes... est une valeur manquante. Ainsi, tous les départements pour lesquels au moins une commune n'a pas de valeur renseignée pour `PMUN15` ont leur maximum à `NA`. La comparaison entre cette valeur et la population de chaque commune renvoie alors `NA` et non `TRUE`. Ces départements ne sont donc pas inclus dans le résultat de `filter()`.-->
 
@@ -763,7 +766,7 @@ p %>% group_by(D) %>%
 
 Pour obtenir le maximum parmi les valeurs renseignées, on peut utiliser l'argument `na.rm = TRUE` dans la fonction `max()` :
 
-```{r, warning = FALSE, message = FALSE}
+```{r warning = FALSE, message = FALSE}
 p %>% group_by(D) %>% 
     summarise(pmax = max(PMUN15, na.rm = TRUE)) %>%
     arrange(desc(pmax)) %>% 
@@ -1201,8 +1204,8 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE, cache = TRUE)
 ```
 
 ## Galerie
-<!--cf random graphes ggplot2-->
-<!-- + script exemple_graphique.R-->
+
+[Quelques exemples...](https://r-graph-gallery.com/)
 
 ## Les graphiques avec R
 
@@ -1261,112 +1264,84 @@ diamonds %>%
   table()
 ```
 
-```{r gf_bar}
+```{r gf_bar, echo = FALSE}
 diamonds %>% 
   gf_bar(~cut)
 ```
 
 
 ## Afficher la distribution d'une variable continue (1/2) : la fonction `gf_histogram`
-<p>On va s'intéresser à la variable *price* de la table *diamonds*, variable quantitative continue donnant le prix en dollars d'un diamant.  
-On va utiliser un **histogramme**, défini par la fonction `gf_histogram` :</p>
+On va s'intéresser à la variable *price* de la table *diamonds*, variable quantitative continue donnant le prix en dollars d'un diamant.  
 
-```{r eval = FALSE}
-diamonds %>% 
-  gf_histogram(~price)
-```
+On va utiliser un **histogramme**, défini par la fonction `gf_histogram` :
 
-----
-```{r gf_histogram}
+```{r}
 diamonds %>% 
   gf_histogram(~price)
 ```
 
 ## Afficher la distribution d'une variable continue (2/2) : la fonction `gf_dens`
-<p> On peut aussi représenter la distribution (ou densité) lissée de la variable, définie par la fonction `gf_dens`.  
-Attention ! Dans ce cas, R fait une estimation par noyau de la densité de probabilité. Il faut donc s'assurer de bien savoir ce que R fait et comment bien gérer les paramètres.</p>
+On peut aussi représenter la distribution (ou densité) lissée de la variable, définie par la fonction `gf_dens`.  
 
-```{r eval = FALSE}
-diamonds %>% 
-  gf_dens(~price)
-```
+Attention ! Dans ce cas, R fait une estimation par noyau de la densité de probabilité. Il faut donc s'assurer de bien savoir ce que R fait et comment bien gérer les paramètres.
 
-----
-```{r gf_dens}
+```{r echo = TRUE, eval = TRUE}
 diamonds %>% 
   gf_dens(~price)
 ```
 
 ## Afficher un nuage de points : la fonction `gf_point`
-<p>On va s'intéresser aux variables *price* et *carat* de la table *diamonds*.  
-On va utiliser un **nuage de points**, défini par la fonction `gf_point` :</p>
-```{r include = TRUE, echo= TRUE, warning = FALSE,message = FALSE, eval = FALSE}
-diamonds %>% 
-  gf_point(carat ~ price)
-```
-<p>La variable à droite du tilde `~` définit les abscisses, la variable à gauche les ordonnées</p>
+On va s'intéresser aux variables *price* et *carat* de la table *diamonds*.  
 
-----
-```{r gf_point}
+On va utiliser un **nuage de points**, défini par la fonction `gf_point` :
+
+```{r echo = TRUE}
 diamonds %>% 
   gf_point(carat ~ price)
 ```
+
+La variable à droite du tilde `~` définit les abscisses, la variable à gauche les ordonnées
 
 ## Afficher les distributions d'un ensemble de variables continues (1/2) : la fonction `gf_boxplot`
 <p>On va s'intéresser à la variable *price* en fonction des modalités de *cut*, de la table *diamonds*.  
 On peut utiliser une **boîte à moustache** ou box-plot, définie par la fonction `gf_boxplot` :<p>
-```{r eval = FALSE}
+```{r eval = TRUE}
 diamonds %>% 
   gf_boxplot(carat ~ cut)
 ```
-<p>Attention : la variable à droite du tilde est la variable discrète.</p>
 
-----
-```{r}
-diamonds %>% 
-  gf_boxplot(carat ~ cut)
-```
+**Attention** : la variable à droite du tilde est la variable discrète.
 
 ## Afficher les distributions d'un ensemble de variables continues (1/2) : la fonction `gf_violin`
-<p>On peut également utiliser une représentation en violon, qui illustre une estimation lissée de la distribution des variables.  
-<b>Attention</b>, les mêmes précautions que pour la représentation de la densité s'appliquent.<p>
+On peut également utiliser une représentation en violon, qui illustre une estimation lissée de la distribution des variables.  
 
-```{r eval = FALSE}
+**Attention** : les mêmes précautions que pour la représentation de la densité s'appliquent.
+
+```{r eval = TRUE}
 diamonds %>% 
   gf_violin(carat ~ cut)
 ```
-<p>Les résultats devront être compatibles avec ce qu'on peut trouver en calculant la moyenne par modalité discrète :</p>
+Les résultats devront être compatibles avec ce qu'on peut trouver en calculant la moyenne par modalité discrète
 ```{r}
 diamonds %>% 
   group_by(cut) %>% 
   summarise(avg = mean(price))
 ```
 
-----
-```{r}
-diamonds %>% 
-  gf_violin(carat ~ cut)
-```
-
 ## Représentation d'une série chronologique
-<p>On va maintenant utiliser la table *economics* et les variables *date* et *unemploy*.  
-On veut illustrer l'évolution du nombre de chômeurs au cours du temps.</p>
+On va maintenant utiliser la table *economics* et les variables *date* et *unemploy*. 
+
+On veut illustrer l'évolution du nombre de chômeurs au cours du temps.
 ```{r}
 head(economics, n = 3)
 ```
-```{r eval = FALSE}
-economics %>% 
-  gf_line(unemploy ~ date)
-```
-
-----
-```{r gf_line}
+```{r eval = TRUE}
 economics %>% 
   gf_line(unemploy ~ date)
 ```
 
 ## Jouer avec le thème
-<p>Le thème permet d'utiliser un ensemble d'options graphiques pré-définies en une seule commande. Le package **ggformula** offre un certain nombre de thèmes de base, mais il est possible de définir les siens. Ce dernier point est en dehors du périmètre de cette formation.</p>
+Le thème permet d'utiliser un ensemble d'options graphiques pré-définies en une seule commande. Le package **ggformula** offre un certain nombre de thèmes de base, mais il est possible de définir les siens. Ce dernier point est en dehors du périmètre de cette formation.
 
 ```{r eval = FALSE}
 diamonds %>% gf_bar(~cut) %>% gf_theme(theme_bw()) # fond blanc, quadrillage gris
@@ -1375,7 +1350,6 @@ diamonds %>% gf_bar(~cut) %>% gf_theme(theme_dark()) # fond gris, quadrillage gr
 diamonds %>% gf_bar(~cut) %>% gf_theme(theme_minimal()) # fond blanc, quadrillage gris, axes non affichés
 ```
 
-----
 ```{r}
 diamonds %>% 
   gf_bar(~cut) %>% 
@@ -1384,7 +1358,8 @@ diamonds %>%
 
 
 ## Jouer avec les formes et les couleurs
-<p>Reprenons la table *economics* et l'évolution du nombre de chômeurs.</p>
+Reprenons la table *economics* et l'évolution du nombre de chômeurs.
+
 ```{r eval = FALSE}
 economics %>% 
   gf_area(unemploy ~ date)
@@ -1394,35 +1369,29 @@ economics %>%
 
 On peut modifier les couleurs sans ajouter d'information.
 
-```{r eval = FALSE}
+```{r eval = TRUE}
 economics %>% 
   gf_area(unemploy ~ date, colour = 'black', fill = 'blue', alpha = 0.1)
 ```
-<p>
+
 - colour : couleur du contour
 - fill : couleur de l'aire intérieure
 - alpha : transparence de l'aire intérieure (entre 0 et 1)
-</p>
 
 ----
 
-```{r gf_area}
-economics %>% 
-  gf_area(unemploy ~ date, colour = 'black', fill = 'blue', alpha = 0.1)
-```
+On peut également modifier les couleurs en ajoutant de l'information.  
 
-----
-<p>On peut également modifier les couleurs en ajoutant de l'information.  
-Reprenons la table *diamonds*, en utilisant uniquement 500 observations pour des questions de lisibilité. On considère les variables *price* et *carat*.</p>
+Reprenons la table *diamonds*, en utilisant uniquement 500 observations pour des questions de lisibilité. On considère les variables *price* et *carat*.
 
 ```{r eval = FALSE}
 diamonds %>% 
   sample_n(size = 500)
 ```
 
-<p>On a déjà défini les coordonnées x et y par *price* et *carat*. On peut ajouter une information supplémentaire avec la variable *cut*. On spécifie que la couleur est une variable en ajoutant un tilde devant.</p>
+On a déjà défini les coordonnées x et y par *price* et *carat*. On peut ajouter une information supplémentaire avec la variable *cut*. On spécifie que la couleur est une variable en ajoutant un tilde devant.
 
-```{r eval = FALSE}
+```{r eval = TRUE}
 diamonds %>% 
   sample_n(size = 500) %>% 
   gf_point(carat ~ price, colour = ~cut)
@@ -1430,33 +1399,15 @@ diamonds %>%
 
 ----
 
-```{r}
-diamonds %>% 
-  sample_n(size = 500) %>% 
-  gf_point(carat ~ price, colour = ~cut)
-```
-
-----
-
-<p>On peut aussi faire varier la forme des points.</p>
+On peut aussi faire varier la forme des points.
 ```{r eval = FALSE}
 diamonds %>% 
   sample_n(size = 500) %>% 
   gf_point(carat ~ price, shape = ~cut)
 ```
 
-<p>Ou même les deux, si on utilise une quatrième variable, la variable *color*.</p>
-```{r eval = FALSE}
-diamonds %>% 
-  sample_n(size = 500) %>% 
-  gf_point(carat ~ price, 
-           colour = ~color,
-           shape = ~cut)
-```
-
-----
-
-```{r}
+Ou même les deux, si on utilise une quatrième variable, la variable *color*.
+```{r eval = TRUE, warning = FALSE}
 diamonds %>% 
   sample_n(size = 500) %>% 
   gf_point(carat ~ price, 
@@ -1466,14 +1417,8 @@ diamonds %>%
 
 
 ## La fonction `gf_labs` : changer le titre
-<p>On peut modifier le titre d'un graphique avec la fonction `gf_labs` :</p>
-```{r eval = FALSE}
-diamonds %>% 
-  sample_n(size = 500) %>% 
-  gf_point(carat ~ price) %>%
-  gf_labs(title = "Lien entre prix et carat des diamants")
-```
-----
+On peut modifier le titre d'un graphique avec la fonction `gf_labs` :
+
 ```{r}
 diamonds %>% 
   sample_n(size = 500) %>% 
@@ -1482,15 +1427,7 @@ diamonds %>%
 ```
 
 ## La fonction `gf_labs` : changer le nom des axes
-<p>On peut modifier le nom des axes :</p>
-```{r eval = FALSE}
-diamonds %>% 
-  sample_n(size = 500) %>% 
-  gf_point(carat ~ price) %>%
-  gf_labs(x = "Prix en dollars",
-          y = "Taille en carat")
-```
-----
+On peut modifier le nom des axes :
 ```{r}
 diamonds %>% 
   sample_n(size = 500) %>% 
@@ -1500,16 +1437,8 @@ diamonds %>%
 ```
 
 ## Changer les limites des axes : la fonction `gf_lims`
-<p>On peut modifier l'intervalle des axes, pour des variables continues :</p>
-```{r eval = FALSE}
-diamonds %>% 
-  sample_n(size = 500) %>% 
-  gf_point(carat ~ price) %>%
-  gf_lims(x = c(10000, 20000),
-          y = c(1,2))
-```
-<p>R écrit un message d'avertissement. En effet, certaines observations sont en dehors de la fenêtre représentée sur le graphique. R ne les affiche pas, mais nous prévient qu'il manque des observations sur le graphique.</p>
-----
+On peut modifier l'intervalle des axes, pour des variables continues :
+
 ```{r warning = TRUE}
 diamonds %>% 
   sample_n(size = 500) %>% 
@@ -1517,50 +1446,30 @@ diamonds %>%
   gf_lims(x = c(10000, 20000),
           y = c(1,2))
 ```
-<br>
+
+Certaines observations sont en dehors de la fenêtre représentée sur le graphique : R ne les affiche pas, mais nous prévient qu'il manque des observations sur le graphique.
 
 ## La fonction `gf_refine` : changer les graduations des axes
-<p>On peut modifier les graduations d'une variable continue avec les fonctions `gf_refine` et `scale_x_continuous`  ou `scale_y_continuous` :</p>
-```{r eval = FALSE}
+On peut modifier les graduations d'une variable continue avec les fonctions `gf_refine` et `scale_x_continuous`  ou `scale_y_continuous` :
+```{r eval = TRUE}
 diamonds %>% 
   sample_n(size = 500) %>% 
   gf_point(carat ~ price) %>%
   gf_refine(scale_x_continuous(breaks = c(0,9000,18000)))
 ```
-----
-```{r}
-diamonds %>% 
-  sample_n(size = 500) %>% 
-  gf_point(carat ~ price) %>%
-  gf_refine(scale_x_continuous(breaks = c(0,9000,18000)))
-```
-
 
 ## La fonction `gf_refine` : changer l'ordre des modalités des axes
-<p>On peut également modifier l'ordre des modalités quand on travaille sur une variable discrète, avec `scale_x_discrete` ou `scale_y_discrete` et l'argument `limits` :</p>
-```{r eval = FALSE}
-diamonds %>% 
-  gf_bar(~ cut) %>%
-  gf_refine(scale_x_discrete(limits = c("Ideal", "Premium", "Very Good", "Good", "Fair")))
-```
+On peut également modifier l'ordre des modalités quand on travaille sur une variable discrète, avec `scale_x_discrete` ou `scale_y_discrete` et l'argument `limits` :
 
-----
-```{r}
+```{r eval = TRUE}
 diamonds %>% 
   gf_bar(~ cut) %>%
   gf_refine(scale_x_discrete(limits = c("Ideal", "Premium", "Very Good", "Good", "Fair")))
 ```
 
 ## La fonction `gf_refine` : changer le nom des modalités des axes
-<p>On peut modifier les noms des modalités avec l'argument `labels` :</p>
-```{r eval = FALSE}
-diamonds %>% 
-  gf_bar(~ cut) %>%
-  gf_refine(scale_x_discrete(labels = c("Juste", "Bon", "Très bon", "Premier choix", "Idéal")))
-```
-
-----
-```{r}
+On peut modifier les noms des modalités avec l'argument `labels` :
+```{r eval = TRUE}
 diamonds %>% 
   gf_bar(~ cut) %>%
   gf_refine(scale_x_discrete(labels = c("Juste", "Bon", "Très bon", "Premier choix", "Idéal")))
@@ -1569,7 +1478,8 @@ diamonds %>%
 ## Exercice
 
 Reproduire le graphique suivant à partir du fichier `donnees/support/fichier_date.RDS` :
-```{r echo = FALSE, eval = FALSE}
+
+```{r echo = FALSE, eval = TRUE}
 library(rio)
 library(tidyverse)
 library(lubridate)
@@ -1673,6 +1583,7 @@ Le document RMarkdown peut être tissé pour produire la sortie (selon les outpu
 <!-- ajouter un .Rmd bac à sable avec des params dans le YAML pour que les stagiaires puissent s'amuser à faire bouger des trucs et constater le résultat -->
 
 Aller plus loin : 
+
 * [Tutoriel RMarkdown par RStudio ](https://rmarkdown.rstudio.com/lesson-1.html) (en anglais)
 * [Exemples de documents, diaporamas et sites web statiques réalisés avec RMarkdown](https://rmarkdown.rstudio.com/gallery.html)
 
