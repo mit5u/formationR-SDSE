@@ -43,18 +43,18 @@ Séquence | Page |
 2 | 13 | Prise en main de données
 3 | 21 | Premiers pas sur la table
 4 | 29 | Création de variables
-5 | 40 | Statistiques simples et pondérées
-6 | 47 | Statistiques par modalités
-7 | 58 | Chaînes de caractères
-8 | 60 | Dates
-8 | 67 | Fusion de tables
-10| 77 | Import/Export
-11| 81 | Transposition
-12| 87 | Mise en forme des résultats
-13| 95 | Graphiques
-14| 134| Bases de données
-15| 139| Partager et diffuser ses résultats
-16| 142| Bonnes pratiques, ressources et communautés R dans le SSP
+5 | 41 | Statistiques simples et pondérées
+6 | 48 | Statistiques par modalités
+7 | 60 | Chaînes de caractères
+8 | 62 | Dates
+8 | 69 | Fusion de tables
+10| 79 | Import/Export
+11| 83 | Transposition
+12| 89 | Mise en forme des résultats
+13| 97 | Graphiques
+14| 122| Bases de données
+15| 129| Partager et diffuser ses résultats
+16| 132| Bonnes pratiques, ressources et communautés R dans le SSP
 
 # Séquence 1 - Travailler en R
 
@@ -1556,13 +1556,43 @@ dbGetQuery(base,"SELECT * FROM formation.poplegale_6815
 
 
 ## Travailler sur une table PostgreSQL comme sur une table R
-<!-- cf C:\Users\GI1ZM7\Documents\00_Travaux\SNLA\Bonnes pratiques R\bonnes_pratiques_R_BDD.Rmd-->
-<!-- cf https://db.rstudio.com/getting-started/overview/-->
+
+La fonction `dbplyr::tbl()` permet d'établir une connexion à une table spécifique
+
+```{r echo = TRUE, eval = FALSE}
+library(dbplyr)
+
+pops <- tbl(base, in_schema("formation", "poplegale_6815"))
+class(pops) # tbl_dbi, tbl_sql, tbl_lazy, tbl
+
+str(pops) # liste : connecteur PostgreSQL + descripteur de la table
+
+pops %>% filter(PMUN15 < 1000)
+
+pops %>% filter(PMUN15 > 1000) %>% 
+    collect() %>% 
+    summarise(across(where(is.numeric), sum, na.rm = TRUE))
+```
+
+## Précautions d'usage pour les requêtes sur base de données depuis R
+
+* `dplyr::collect()` récupère le résultat de la requête dans la session R : selon la requête, l'objet peut être très gros !
+* Les traitements R soumis à la base de données via `dbplyr` sont traduits dans une langue que comprend le SGBD, mais la traduction n'est pas toujours adéquate (préférer `%like%` à `stringr::str_detect()` par exemple).
+* `dbplyr::sql_query_explain()` permet d'afficher la traduction du traitement R qui est effectivement soumise à la base de données
+
+## Base de données locale avec SQLite
+
+```{r echo = TRUE, eval = FALSE}
+library(RSQLite)
+driver <- dbDriver("SQLite")
+base_temporaire <- dbConnect(driver, "") # pas de nom de fichier => base détruite à la fin de la session
+base_en_ram <- dbConnect(driver, ":memory:") # nom de fichier = ":memory:" => base créée en mémoire et non sur le disque
+```
+
+
 # Séquence 15 - Partager et diffuser ses résultats
 
 ## RMarkdown
-
-<!--lien vers mon blabla pédagogique sur le sujet pour faire une démo live plutôt qu'une lecture de doc barbante-->
 
 Dans RStudio, cliquer sur `"File" > "New File" > "RMarkdown..."` ou `"R Notebook"` (le R Notebook étant un RMarkdown enrichi).
 
@@ -1579,8 +1609,6 @@ Les blocs de code sont ajoutés avec le raccourci clavier `CTRL + ALT + I` (ou �
 Ce corps est précédé d'une en-tête (YAML) pour le format d'export et la titraille. On peut y ajouter des éléments dynamiques comme la date de compilation du document ou des paramètres utilisables par le code du corps du document (définis dans le champ `params:`, puis invocables dans les blocs de code avec `params$`).
 
 Le document RMarkdown peut être tissé pour produire la sortie (selon les outputs définis dans l'en-tête) avec le raccourci `CTRL + MAJ + K` (ou le bouton `Knit` au-dessus du panneau de script dans RStudio)
-
-<!-- ajouter un .Rmd bac à sable avec des params dans le YAML pour que les stagiaires puissent s'amuser à faire bouger des trucs et constater le résultat -->
 
 Aller plus loin : 
 
