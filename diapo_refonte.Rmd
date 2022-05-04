@@ -1578,7 +1578,7 @@ pops %>% filter(PMUN15 > 1000) %>%
 
 * `dplyr::collect()` récupère le résultat de la requête dans la session R : selon la requête, l'objet peut être très gros !
 * Les traitements R soumis à la base de données via `dbplyr` sont traduits dans une langue que comprend le SGBD, mais la traduction n'est pas toujours adéquate (préférer `%like%` à `stringr::str_detect()` par exemple).
-* `dbplyr::sql_query_explain()` permet d'afficher la traduction du traitement R qui est effectivement soumise à la base de données
+* `df %>% dplyr::show_query()` permet d'afficher la traduction du traitement R qui est effectivement soumise à la base de données pour générer la table `df` (utile pour se familiariser avec SQL ou comprendre pourquoi le résultat ne correspond pas à nos attentes)
 
 ## Base de données locale avec SQLite
 
