@@ -1562,23 +1562,24 @@ La fonction `dbplyr::tbl()` permet d'établir une connexion à une table spécif
 ```{r echo = TRUE, eval = FALSE}
 library(dbplyr)
 
-pops <- tbl(base, in_schema("formation", "poplegale_6815"))
-class(pops) # tbl_dbi, tbl_sql, tbl_lazy, tbl
+pops_db <- tbl(base, in_schema("formation", "poplegale_6815"))
+class(pops_db) # tbl_dbi, tbl_sql, tbl_lazy, tbl
 
-str(pops) # liste : connecteur PostgreSQL + descripteur de la table
+str(pops_db) # liste : connecteur PostgreSQL + descripteur de la table
 
-pops %>% filter(PMUN15 < 1000)
+pops_db %>% filter(PMUN15 > 1000)
 
-pops %>% filter(PMUN15 > 1000) %>% 
-    collect() %>% 
+pops_db %>% filter(PMUN15 > 1000) %>% # on travaille sur la base PostgreSQL
+    collect() %>% # on travaille désormais sur vrai un objet R
     summarise(across(where(is.numeric), sum, na.rm = TRUE))
 ```
 
 ## Précautions d'usage pour les requêtes sur base de données depuis R
 
-* `dplyr::collect()` récupère le résultat de la requête dans la session R : selon la requête, l'objet peut être très gros !
+* `dplyr::collect()` récupère le résultat de la requête dans la session R : selon la requête, l'objet peut être très gros ! 
 * Les traitements R soumis à la base de données via `dbplyr` sont traduits dans une langue que comprend le SGBD, mais la traduction n'est pas toujours adéquate (préférer `%like%` à `stringr::str_detect()` par exemple).
-* `df %>% dplyr::show_query()` permet d'afficher la traduction du traitement R qui est effectivement soumise à la base de données pour générer la table `df` (utile pour se familiariser avec SQL ou comprendre pourquoi le résultat ne correspond pas à nos attentes)
+* `df_db_resul %>% dplyr::show_query()` permet d'afficher la traduction du traitement R qui est effectivement soumise à la base de données pour générer la table `df_db_resul` (utile pour se familiariser avec SQL, ou comprendre pourquoi le résultat ne correspond pas à nos attentes)
+* `df_db_resul %>% dplyr::explain()` permet d'afficher le plan d'exécution de la requête qui aboutit à `df_db_resul` (utile pour se familiariser avec le fonctionnement précis de notre SGBD, ou déterminer s'il faut créer des index pour optimiser le temps de traitement, etc.)
 
 ## Base de données locale avec SQLite
 
