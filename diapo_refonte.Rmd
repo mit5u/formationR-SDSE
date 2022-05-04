@@ -1,8 +1,10 @@
 ---
 title: 'Prise en main rapide de données sous <img alt="R" src="www/logo_r.png" style="height:100px">'
-author: "Jocelyn Béziau (Insee) et Céline Técher (Dreets)"
+author: "Jocelyn Béziau (Insee) et Céline Técher (Dreets)\n"
 date: 'Version du `r format(Sys.Date(), "%d %B %Y")`'
+always_allow_html: true
 output:
+    #rmarkdown::github_document:
     slidy_presentation:
       self_contained: false
       css: r_rapide.css
@@ -20,6 +22,7 @@ library(tidyverse)
 library(tibble)
 library(haven)
 library(rio)
+library(ggformula)
 
 pops <- as_tibble(readRDS("donnees/support/popsR54.RDS"))
 tab_naissances <- import("donnees/support/tab_naissances5.sas7bdat")
@@ -349,7 +352,7 @@ La fonction `distinct()` retourne une table sans doublons. Elle peut être utile
 
 ```{r}
 # toutes les modalités prises par la variable csm (PCS de la mère)
-tab_naissances %>% distinct(csm)
+tab_naissances %>% distinct(csm) %>% head(5)
 ```
 
 C'est l'équivalent de l'instruction SQL :
@@ -361,7 +364,7 @@ SELECT DISTINCT csm FROM tab_naissances
 Sans argument, la fonction `distinct()` renvoie une table purgée des lignes en double
 
 ```{r}
-tab_naissances %>% distinct()
+tab_naissances %>% distinct() %>% head(5)
 ```
 
 C'est l'équivalent de l'instruction SQL :
@@ -822,7 +825,7 @@ a %>%
 Et on récupère le département ayant le plus grand nombre de naissances, dans chaque région.
 
 Pour supprimer l'ensemble des regroupements, utiliser `ungroup()`. Pour le département qui a le plus de naissances, France entière :
-````{r eval = FALSE}
+```{r eval = FALSE}
 a %>%                     
   ungroup() %>%                               
   filter(nombre_naissances == max(nombre_naissances))   
@@ -1344,6 +1347,7 @@ economics %>%
 Le thème permet d'utiliser un ensemble d'options graphiques pré-définies en une seule commande. Le package **ggformula** offre un certain nombre de thèmes de base, mais il est possible de définir les siens. Ce dernier point est en dehors du périmètre de cette formation.
 
 ```{r eval = FALSE}
+library(ggformula)
 diamonds %>% gf_bar(~cut) %>% gf_theme(theme_bw()) # fond blanc, quadrillage gris
 diamonds %>% gf_bar(~cut) %>% gf_theme(theme_gray()) # fond gris, quadrillage blanc
 diamonds %>% gf_bar(~cut) %>% gf_theme(theme_dark()) # fond gris, quadrillage gris foncé
@@ -1351,6 +1355,7 @@ diamonds %>% gf_bar(~cut) %>% gf_theme(theme_minimal()) # fond blanc, quadrillag
 ```
 
 ```{r}
+library(ggformula)
 diamonds %>% 
   gf_bar(~cut) %>% 
   gf_theme(theme_dark())
@@ -1694,3 +1699,8 @@ Satellites : DBI/haven/httr/readxl/googlesheets4/googledrive/rvest/jsonlite/xml2
 Des questions ? Remarques ? Doutes ?
 
 ... Merci pour votre attention !
+
+Service après-vente :
+
+- [jocelyn.beziau@insee.fr](mailto:jocelyn.beziau@insee.fr)
+- [celine.techer@dreets.gouv.fr](mailto:celine.techer@dreets.gouv.fr)
