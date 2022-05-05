@@ -560,7 +560,7 @@ tab_naissances %>% mutate(
 		substr(csm, 1, 1) == '4' ~ "professions intermédiaires",
 		substr(csm, 1, 1) == '5' ~ "employés",
 		substr(csm, 1, 1) == '6' ~ "ouvriers",                  # les modalités sont recodées explicitement
-		substr(csm, 1, 1) == '9' ~ "chômeurs ou inactifs",     
+		substr(csm, 1, 1) %in% c('7','8') ~ "chômeurs ou inactifs",     
 		TRUE                     ~ "indéterminé"))              # et si tout échoue...
 
 ```
