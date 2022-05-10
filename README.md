@@ -21,5 +21,5 @@ Adaptation de la formation nationale pour la session prévue en mai avec le SSM 
 * Bonnes pratiques, ressources et communautés R dans le SSP
 
 ## Bonus
-* [Site compagnon (WIP)](https://formation-r-prise-en-main.netlify.app/)
+* [Site compagnon](https://formation-r-prise-en-main.netlify.app/)
 * [Quizz inter-journées](https://jiji.shinyapps.io/quizz/)
