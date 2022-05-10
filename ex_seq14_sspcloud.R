@@ -1,12 +1,14 @@
 # install.packages(c("bookdown", "tidyverse", "dbplyr", "RPostgres", "RSQLite", "palmer.penguins"))
+# install.packages("dbplot")
 
 library(dbplyr)
 library(tidyverse)
+library(dbplot)
 
 con <- DBI::dbConnect(RPostgres::Postgres(), 
                  user <- "user-jbeziau",
                  password = rstudioapi::askForPassword(paste0("Mot de passe de la base de données pour ", user)),
-                 host = "postgresql-263883",
+                 host = "postgresql-560901",
                  port = "5432",
                  dbname = "defaultdb")
 
@@ -38,3 +40,8 @@ tailnum_delay_db <- flights_db %>%
 tailnum_delay_db
 tailnum_delay_db %>% show_query()
 tailnum_delay_db %>% explain()
+
+copy_to(con, mtcars)
+mtcars <- tbl(con, "mtcars")
+mtcars %>% 
+    dbplot_bar(am, mean(mpg))
