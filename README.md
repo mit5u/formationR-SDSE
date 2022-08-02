@@ -1,6 +1,6 @@
 # formation-r-prise-en-main
 
-Adaptation de la formation nationale pour la session prévue en mai avec le SSM Justice
+Adaptation de la formation nationale pour la session de mai 2022
 
 ## Programme des deux jours de formation
 * Travailler en R : RStudio, packages, trouver de l’aide
